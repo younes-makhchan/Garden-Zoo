@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Zoo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="name-modal-overlay" class="modal-overlay">
+        <div id="name-input" class="name-modal">
+            <h2>🌱 Name Your Garden! 🌱</h2>
+            <p>Give your magical space a special name to begin.</p>
+            <input type="text" id="garden-name-input" placeholder="e.g. Daisy's Dreamland" maxlength="20">
+            <button id="save-name">Let's Grow!</button>
+        </div>
+    </div>
+    <div id="garden">
+        <div class="animal" id="cat" data-fact="Cats say meow and love to play!" data-clicked="false">
+            <img src="assets/cat.png" alt="Cat">
+            <span class="label">Cat</span>
+            <span class="tooltip" id="tooltip-cat"></span>
+        </div>
+        <div class="animal" id="chicken" data-fact="Chickens cluck and lay eggs!" data-clicked="false">
+            <img src="assets/chicken.png" alt="Chicken">
+            <span class="label">Chicken</span>
+            <span class="tooltip" id="tooltip-chicken"></span>
+        </div>
+        <div class="animal" id="cow" data-fact="Cows moo and give milk!" data-clicked="false">
+            <img src="assets/cow.png" alt="Cow">
+            <span class="label">Cow</span>
+            <span class="tooltip" id="tooltip-cow"></span>
+        </div>
+        <div class="animal" id="dog" data-fact="Dogs bark and are loyal friends!" data-clicked="false">
+            <img src="assets/dog.png" alt="Dog">
+            <span class="label">Dog</span>
+            <span class="tooltip" id="tooltip-dog"></span>
+        </div>
+        <div class="animal" id="goat" data-fact="Goats bleat and eat grass!" data-clicked="false">
+            <img src="assets/goat.png" alt="Goat">
+            <span class="label">Goat</span>
+            <span class="tooltip" id="tooltip-goat"></span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
