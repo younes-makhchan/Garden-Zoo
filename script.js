@@ -16,8 +16,9 @@ const sounds = {
     dog: 'audio/dog.wav',
     goat: 'audio/goat.wav'
 };
+
 document.addEventListener('DOMContentLoaded', function() {
-    main()
+    main();
 
     // STEP 1: Uncomment to make animals visible
     Object.keys(animalPositions).forEach(function(animalId) {
@@ -39,22 +40,25 @@ document.addEventListener('DOMContentLoaded', function() {
     Object.keys(sounds).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         animal.addEventListener('click', function() {
-            const audio = new Audio(sounds[animalId]);
-            audio.play().catch(function(error) {
-                console.log('Error playing sound for ' + animalId + ': ', error);
-            });
+            animal.clickTimeoutSound = setTimeout(() => {
+                const audio = new Audio(sounds[animalId]);
+                audio.play().catch(function(error) {
+                    console.log('Error playing sound for ' + animalId + ': ', error);
+                });
+            }, 1000);
         });
     });
 
-    // STEP 4: Uncomment for naming animals on double-click
+    // STEP 4: Uncomment for naming animals on right-click
     const animalNames = JSON.parse(localStorage.getItem('animalNames')) || {};
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         const label = animal.querySelector('.label');
         label.textContent = animalNames[animalId] || animalId.charAt(0).toUpperCase() + animalId.slice(1);
-        animal.addEventListener('dblclick', function() {
+        animal.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
             const existingInput = animal.querySelector('.name-input');
-            if (existingInput) return; // Prevent multiple
+            if (existingInput) return;
             const inputDiv = document.createElement('div');
             inputDiv.className = 'name-input';
             inputDiv.innerHTML = `
@@ -84,33 +88,80 @@ document.addEventListener('DOMContentLoaded', function() {
     Object.keys(sounds).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         animal.addEventListener('click', function() {
-            animal.classList.add('jumping');
-            setTimeout(function() {
-                animal.classList.remove('jumping');
-            }, 500);
+            animal.clickTimeout = setTimeout(() => {
+                animal.classList.add('jumping');
+                setTimeout(function() {
+                    animal.classList.remove('jumping');
+                }, 500);
+            }, 300);
         });
     });
 
-    // STEP 6: Uncomment for custom voice description tooltip
+    // STEP 6: Uncomment for custom voice description on double-click
     const voiceDescs = JSON.parse(localStorage.getItem('voiceDescs')) || {};
-    Object.keys(sounds).forEach(function(animalId) {
-        const animal = document.getElementById(animalId);
-        const tooltip = document.getElementById('tooltip-' + animalId);
-        animal.addEventListener('click', function() {
-            if (!voiceDescs[animalId]) {
-                const desc = prompt('What does ' + animal.querySelector('.label').textContent + ' say? (e.g., "Meow!")');
-                if (desc && desc.trim()) {
-                    voiceDescs[animalId] = desc.trim();
-                } else {
-                    voiceDescs[animalId] = 'Sound!';
-                }
-                localStorage.setItem('voiceDescs', JSON.stringify(voiceDescs));
-            }
-            tooltip.textContent = voiceDescs[animalId];
+    let currentVoiceAnimal = null;
+    const voiceModal = document.getElementById('voice-modal-overlay');
+    const voiceInput = document.getElementById('voice-description-input');
+    const voiceError = document.getElementById('voice-error');
+    const saveVoiceButton = document.getElementById('save-voice');
+
+    function showVoiceModal(animalId) {
+        currentVoiceAnimal = animalId;
+        voiceInput.value = voiceDescs[animalId] || '';
+        voiceError.style.display = 'none';
+        saveVoiceButton.disabled = !voiceInput.value.trim();
+        voiceModal.style.display = 'flex';
+        voiceInput.focus();
+    }
+
+    function hideVoiceModal() {
+        voiceModal.style.display = 'none';
+        currentVoiceAnimal = null;
+    }
+
+    voiceInput.addEventListener('input', function() {
+        saveVoiceButton.disabled = !this.value.trim();
+        voiceError.style.display = 'none';
+    });
+
+    saveVoiceButton.addEventListener('click', function() {
+        const desc = voiceInput.value.trim();
+        if (desc) {
+            voiceDescs[currentVoiceAnimal] = desc;
+            localStorage.setItem('voiceDescs', JSON.stringify(voiceDescs));
+            hideVoiceModal();
+            const tooltip = document.getElementById('tooltip-' + currentVoiceAnimal);
+            tooltip.textContent = desc;
             tooltip.classList.add('active');
             setTimeout(function() {
                 tooltip.classList.remove('active');
             }, 3000);
+        } else {
+            voiceError.style.display = 'block';
+        }
+    });
+
+    voiceInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !saveVoiceButton.disabled) {
+            saveVoiceButton.click();
+        }
+    });
+
+    Object.keys(sounds).forEach(function(animalId) {
+        const animal = document.getElementById(animalId);
+        const tooltip = document.getElementById('tooltip-' + animalId);
+        animal.addEventListener('dblclick', function() {
+            if (animal.clickTimeout) clearTimeout(animal.clickTimeout);
+            if(animal.clickTimeoutSound) clearTimeout(animal.clickTimeoutSound);
+            if (!voiceDescs[animalId]) {
+                showVoiceModal(animalId);
+            } else {
+                tooltip.textContent = voiceDescs[animalId];
+                tooltip.classList.add('active');
+                setTimeout(function() {
+                    tooltip.classList.remove('active');
+                }, 3000);
+            }
         });
     });
 
@@ -137,40 +188,50 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // STEP 8A: Uncomment for sound matching mini-game
-    // let gameScore = parseInt(localStorage.getItem('gameScore')) || 0;
-    // let currentMystery;
-    // const gameButton = document.createElement('button');
-    // gameButton.textContent = 'Play Mystery Sound!';
-    // gameButton.style.position = 'absolute';
-    // gameButton.style.top = '10px';
-    // gameButton.style.right = '10px';
-    // gameButton.style.padding = '10px';
-    // gameButton.style.background = '#FF9800';
-    // gameButton.style.color = 'white';
-    // gameButton.style.border = 'none';
-    // gameButton.style.borderRadius = '5px';
-    // gameButton.style.cursor = 'pointer';
-    // document.body.appendChild(gameButton);
-    // gameButton.addEventListener('click', function() {
-    //     const ids = Object.keys(sounds);
-    //     currentMystery = ids[Math.floor(Math.random() * ids.length)];
-    //     const audio = new Audio(sounds[currentMystery]);
-    //     audio.play().catch(function(error) {
-    //         console.log('Error playing mystery sound: ', error);
-    //     });
-    // });
-    // Object.keys(sounds).forEach(function(animalId) {
-    //     const animal = document.getElementById(animalId);
-    //     animal.addEventListener('click', function() {
-    //         if (currentMystery === animalId) {
-    //             gameScore++;
-    //             localStorage.setItem('gameScore', gameScore);
-    //             alert('Correct! Score: ' + gameScore);
-    //         } else {
-    //             alert('Wrong! Try again.');
-    //         }
-    //     });
-    // });
+    let gameScore = parseInt(localStorage.getItem('gameScore')) || 0;
+    let currentMystery;
+    const gameNotif = document.getElementById('game-notification');
+    function showGameNotif(message, duration = 3000) {
+        gameNotif.textContent = message;
+        gameNotif.style.display = 'block';
+        setTimeout(() => gameNotif.style.display = 'none', duration);
+    }
+    const gameButton = document.createElement('button');
+    gameButton.textContent = 'Play Mystery Sound!';
+    gameButton.style.position = 'absolute';
+    gameButton.style.top = '10px';
+    gameButton.style.right = '10px';
+    gameButton.style.padding = '10px';
+    gameButton.style.background = '#FF9800';
+    gameButton.style.color = 'white';
+    gameButton.style.border = 'none';
+    gameButton.style.borderRadius = '5px';
+    gameButton.style.cursor = 'pointer';
+    document.body.appendChild(gameButton);
+    gameButton.addEventListener('click', function() {
+        const ids = Object.keys(sounds);
+        currentMystery = ids[Math.floor(Math.random() * ids.length)];
+        const audio = new Audio(sounds[currentMystery]);
+        audio.play().catch(function(error) {
+            console.log('Error playing mystery sound: ', error);
+        });
+        showGameNotif('Game started! Find the animal that made this sound!', 5000);
+    });
+    Object.keys(sounds).forEach(function(animalId) {
+        const animal = document.getElementById(animalId);
+        animal.addEventListener('click', function() {
+            if (currentMystery) {
+                if (currentMystery === animalId) {
+                    gameScore++;
+                    localStorage.setItem('gameScore', gameScore);
+                    showGameNotif('Correct! Score: ' + gameScore);
+                    currentMystery = null;
+                } else {
+                    showGameNotif('Wrong! Try again.');
+                }
+            }
+        });
+    });
 
     // STEP 8B: Uncomment for farm tour parade
     // const tourButton = document.createElement('button');
@@ -204,14 +265,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //         }, index * 3000);
     //     });
     // });
-
 });
 
 // =====================================================================================
 // ACTIVE CODE BELOW - Do not edit this section, it's for the app to run
 // =====================================================================================
 
-function main(){
+function main() {
     // Garden Name Input on Load
     const nameInputDiv = document.getElementById('name-modal-overlay');
     const saveButton = document.getElementById('save-name');
@@ -237,8 +297,6 @@ function main(){
             }
         });
     }
-
-
 
     // STEP 0: Empty forest - hide animals
     Object.keys(animalPositions).forEach(function(animalId) {

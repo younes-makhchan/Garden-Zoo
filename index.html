@@ -15,6 +15,15 @@
             <button id="save-name">Let's Grow!</button>
         </div>
     </div>
+    <div id="voice-modal-overlay" class="modal-overlay">
+        <div id="voice-input" class="voice-modal">
+            <h2>What does it say? 🌱</h2>
+            <input type="text" id="voice-description-input" placeholder='e.g., "Meow meow!"'>
+            <p id="voice-error" class="error-message" style="display: none;">Please enter a voice description!</p>
+            <button id="save-voice" disabled>Save Voice</button>
+        </div>
+    </div>
+    <div id="game-notification" class="game-notif" style="display: none;"></div>
     <div id="garden">
         <div class="animal" id="cat" data-fact="Cats say meow and love to play!" data-clicked="false">
             <img src="assets/cat.png" alt="Cat">
