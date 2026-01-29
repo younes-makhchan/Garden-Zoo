@@ -1,5 +1,3 @@
-// Workshop Steps - Uncomment blocks below to unlock features progressively
-
 // Global configs
 const animalPositions = {
     cat: { left: '70%', top: '65%' },
@@ -21,35 +19,68 @@ document.addEventListener('DOMContentLoaded', function() {
     main();
 
     // STEP 1: Uncomment to make animals visible
+    // showAnimals();
+
+    // STEP 2: Uncomment for idle wiggle
+    // addWiggle();
+
+    // STEP 3: Uncomment for click to replay sound
+    // addSoundOnClick();
+
+    // STEP 4: Uncomment for naming animals on right-click
+    // addNamingOnRightClick();
+
+    // STEP 5: Uncomment for jump reaction on click
+    // addJumpOnClick();
+
+    // STEP 6: Uncomment for custom voice description on double-click
+    // addVoiceOnDoubleClick();
+
+    // STEP 7: Uncomment for drag and explore
+    // addDrag();
+
+    // STEP 8A: Uncomment for sound matching mini-game
+    // addSoundGame();
+
+    // STEP 8B: Uncomment for farm tour parade
+    // addFarmTour();
+});
+
+// Function definitions for each step
+
+function showAnimals() {
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         if (animal) {
             animal.style.display = 'block';
         }
     });
+}
 
-    // STEP 2: Uncomment for idle wiggle
+function addWiggle() {
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         if (animal) {
             animal.style.animation = 'idleWiggle 3s ease-in-out infinite';
         }
     });
+}
 
-    // STEP 3: Uncomment for click to replay sound
+function addSoundOnClick() {
     Object.keys(sounds).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         animal.addEventListener('click', function() {
-            animal.clickTimeoutSound = setTimeout(() => {
+            animal.clickTimeout = setTimeout(() => {
                 const audio = new Audio(sounds[animalId]);
                 audio.play().catch(function(error) {
                     console.log('Error playing sound for ' + animalId + ': ', error);
                 });
-            }, 1000);
+            }, 500);
         });
     });
+}
 
-    // STEP 4: Uncomment for naming animals on right-click
+function addNamingOnRightClick() {
     const animalNames = JSON.parse(localStorage.getItem('animalNames')) || {};
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
@@ -83,8 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+}
 
-    // STEP 5: Uncomment for jump reaction on click
+function addJumpOnClick() {
     Object.keys(sounds).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         animal.addEventListener('click', function() {
@@ -96,8 +128,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         });
     });
+}
 
-    // STEP 6: Uncomment for custom voice description on double-click
+function addVoiceOnDoubleClick() {
     const voiceDescs = JSON.parse(localStorage.getItem('voiceDescs')) || {};
     let currentVoiceAnimal = null;
     const voiceModal = document.getElementById('voice-modal-overlay');
@@ -152,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const tooltip = document.getElementById('tooltip-' + animalId);
         animal.addEventListener('dblclick', function() {
             if (animal.clickTimeout) clearTimeout(animal.clickTimeout);
-            if(animal.clickTimeoutSound) clearTimeout(animal.clickTimeoutSound);
             if (!voiceDescs[animalId]) {
                 showVoiceModal(animalId);
             } else {
@@ -164,8 +196,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+}
 
-    // STEP 7: Uncomment for drag and explore
+function addDrag() {
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         let isDragging = false;
@@ -186,8 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
             isDragging = false;
         });
     });
+}
 
-    // STEP 8A: Uncomment for sound matching mini-game
+function addSoundGame() {
     let gameScore = parseInt(localStorage.getItem('gameScore')) || 0;
     let currentMystery;
     const gameNotif = document.getElementById('game-notification');
@@ -232,47 +266,43 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+}
 
-    // STEP 8B: Uncomment for farm tour parade
-    // const tourButton = document.createElement('button');
-    // tourButton.textContent = 'Start Farm Tour!';
-    // tourButton.style.position = 'absolute';
-    // tourButton.style.top = '60px';
-    // tourButton.style.right = '10px';
-    // tourButton.style.padding = '10px';
-    // tourButton.style.background = '#2196F3';
-    // tourButton.style.color = 'white';
-    // tourButton.style.border = 'none';
-    // tourButton.style.borderRadius = '5px';
-    // tourButton.style.cursor = 'pointer';
-    // document.body.appendChild(tourButton);
-    // tourButton.addEventListener('click', function() {
-    //     const ids = Object.keys(animalPositions);
-    //     ids.forEach(function(id, index) {
-    //         setTimeout(function() {
-    //             const animal = document.getElementById(id);
-    //             const tooltip = document.getElementById('tooltip-' + id);
-    //             const voiceDesc = JSON.parse(localStorage.getItem('voiceDescs')) || {};
-    //             tooltip.textContent = voiceDesc[id] || 'Sound!';
-    //             tooltip.classList.add('active');
-    //             setTimeout(function() {
-    //                 tooltip.classList.remove('active');
-    //             }, 2000);
-    //             const audio = new Audio(sounds[id]);
-    //             audio.play().catch(function(error) {
-    //                 console.log('Error in tour: ', error);
-    //             });
-    //         }, index * 3000);
-    //     });
-    // });
-});
-
-// =====================================================================================
-// ACTIVE CODE BELOW - Do not edit this section, it's for the app to run
-// =====================================================================================
+function addFarmTour() {
+    const tourButton = document.createElement('button');
+    tourButton.textContent = 'Start Farm Tour!';
+    tourButton.style.position = 'absolute';
+    tourButton.style.top = '60px';
+    tourButton.style.right = '10px';
+    tourButton.style.padding = '10px';
+    tourButton.style.background = '#2196F3';
+    tourButton.style.color = 'white';
+    tourButton.style.border = 'none';
+    tourButton.style.borderRadius = '5px';
+    tourButton.style.cursor = 'pointer';
+    document.body.appendChild(tourButton);
+    tourButton.addEventListener('click', function() {
+        const ids = Object.keys(animalPositions);
+        ids.forEach(function(id, index) {
+            setTimeout(function() {
+                const animal = document.getElementById(id);
+                const tooltip = document.getElementById('tooltip-' + id);
+                const voiceDesc = JSON.parse(localStorage.getItem('voiceDescs')) || {};
+                tooltip.textContent = voiceDesc[id] || 'Sound!';
+                tooltip.classList.add('active');
+                setTimeout(function() {
+                    tooltip.classList.remove('active');
+                }, 2000);
+                const audio = new Audio(sounds[id]);
+                audio.play().catch(function(error) {
+                    console.log('Error in tour: ', error);
+                });
+            }, index * 3000);
+        });
+    });
+}
 
 function main() {
-    // Garden Name Input on Load
     const nameInputDiv = document.getElementById('name-modal-overlay');
     const saveButton = document.getElementById('save-name');
     const nameInput = document.getElementById('garden-name-input');
@@ -298,7 +328,6 @@ function main() {
         });
     }
 
-    // STEP 0: Empty forest - hide animals
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         if (animal) {
@@ -306,7 +335,6 @@ function main() {
         }
     });
 
-    // Apply positions (always)
     Object.keys(animalPositions).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         if (animal) {
