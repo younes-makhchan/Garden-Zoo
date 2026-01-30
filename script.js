@@ -19,31 +19,30 @@ document.addEventListener('DOMContentLoaded', function() {
     main();
 
     // STEP 1: Uncomment to make animals visible
-    // showAnimals();
+    //showAnimals();
 
     // STEP 2: Uncomment for idle wiggle
-    // addWiggle();
+    //addWiggle();
 
-    // STEP 3: Uncomment for click to replay sound
-    // addSoundOnClick();
+    // STEP 3: Uncomment for jump reaction on click
+    //addJumpOnClick();
+    // STEP 4: Uncomment for click to replay sound
+    //addSoundOnClick();
 
-    // STEP 4: Uncomment for naming animals on right-click
-    // addNamingOnRightClick();
-
-    // STEP 5: Uncomment for jump reaction on click
-    // addJumpOnClick();
+    // STEP 5: Uncomment for naming animals on right-click
+    //addNamingOnRightClick();
 
     // STEP 6: Uncomment for custom voice description on double-click
-    // addVoiceOnDoubleClick();
+    //addVoiceOnDoubleClick();
 
     // STEP 7: Uncomment for drag and explore
-    // addDrag();
+    //addDrag();
 
     // STEP 8A: Uncomment for sound matching mini-game
-    // addSoundGame();
+    //addSoundGame();
 
     // STEP 8B: Uncomment for farm tour parade
-    // addFarmTour();
+    //addFarmTour();
 });
 
 // Function definitions for each step
@@ -183,17 +182,22 @@ function addVoiceOnDoubleClick() {
     Object.keys(sounds).forEach(function(animalId) {
         const animal = document.getElementById(animalId);
         const tooltip = document.getElementById('tooltip-' + animalId);
-        animal.addEventListener('dblclick', function() {
-            if (animal.clickTimeout) clearTimeout(animal.clickTimeout);
-            if (!voiceDescs[animalId]) {
-                showVoiceModal(animalId);
-            } else {
+        animal.addEventListener('click', function() {
+        if (voiceDescs[animalId]) {
                 tooltip.textContent = voiceDescs[animalId];
                 tooltip.classList.add('active');
                 setTimeout(function() {
                     tooltip.classList.remove('active');
                 }, 3000);
             }
+
+            
+        });
+        animal.addEventListener('dblclick', function() {
+            if (animal.clickTimeout) clearTimeout(animal.clickTimeout);
+            if (!voiceDescs[animalId]) {
+                showVoiceModal(animalId);
+            } 
         });
     });
 }
